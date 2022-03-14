@@ -1,48 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="movies.css">
-</head>
-<body>
-  <div class="movie-title">
-    <h1>Latest Movies🎞</h1>
-  </div> 
-  <div class="movie-list">
- 
+    <link rel="stylesheet" href="movies.css" />
+  </head>
+  <body>
+    <div class="movie-title">
+      <h1>Latest Movies🎞</h1>
     </div>
+    <div class="movie-list"></div>
 
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+      integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script>
+      const apiCall = async () => {
+        const res = await axios.get(
+          "https://yts.mx/api/v2/list_movies.json?sort_by=year&order_by=desc"
+        );
 
-        fetch("https://yts.mx/api/v2/list_movies.json?sort_by=year&order_by=desc")
-          .then((res)=> res.status!==200? alert("서버와 통신에 실패했습니다."):res.json())
-          .then((jsonData)=>{
-            
-            let tag=""
-            let data = jsonData.data.movies
-            data.map((e)=>{         
-        tag += `<div class="movie">`
-        tag +=` <a href="${e.url}"">`
-        tag += `<img src="${e.medium_cover_image}"/>`
-        tag += `</a>`      
-        tag += `<h3 class="title">${e.title}</h3>`
-        tag += `<h3 class="year">${e.year}</h3>`
-        tag += `<ul class="genres">`
-          for(let k in e.genres)
-          {tag += `<li>${e.genres[k]}</li>`}
-        tag += `</ul>`
-        tag += `<textarea class="summary">${e.summary}</textarea>`
-        tag += `</div>`
-            })
+        if (res.status !== 200) return alert("서버와 통신에 실패했습니다.");
+        const jsonData = await res.data;
+
+        let tag = "";
+        let data = jsonData.data.movies;
+        data.map((e) => {
+          tag += `<div class="movie">`;
+          tag += ` <a href="${e.url}"">`;
+          tag += `<img src="${e.medium_cover_image}"/>`;
+          tag += `</a>`;
+          tag += `<h3 class="title">${e.title}</h3>`;
+          tag += `<h3 class="year">${e.year}</h3>`;
+          tag += `<ul class="genres">`;
+          for (let k in e.genres) {
+            tag += `<li>${e.genres[k]}</li>`;
+          }
+          tag += `</ul>`;
+          tag += `<textarea class="summary">${e.summary}</textarea>`;
+          tag += `</div>`;
+        });
         document.querySelector(".movie-list").innerHTML = tag;
-        
-        
-       
-        })
-
+      };
+      apiCall();
     </script>
-</body>
+  </body>
 </html>
